@@ -1,24 +1,9 @@
 var request = require('request');
 
 //////////////////////////////////////////////////
-// OPTIONS FOR HTTP GET
-// Purpose:    Used to test. Returns hotels index.
-//////////////////////////////////////////////////
-
-var optionsGET = {
-    url: 'https://terkaly.search.windows.net/indexes/hotels?api-version=2014-07-31-Preview',
-    method: 'GET',
-    headers: {
-        'api-key': 'B7D12B8CA3D018EC09C754F95CA552D2',
-        'Content-Type': 'application/json'
-    }
-};
-
-//////////////////////////////////////////////////
 // OPTIONS FOR HTTP PUT 
 // Purpose:    Used to create an index called hotels
 //////////////////////////////////////////////////
-
 var optionsPUT = {
     url: 'https://terkaly.search.windows.net/indexes/hotels?api-version=2014-07-31-Preview',
     method: 'PUT',
@@ -123,11 +108,11 @@ var optionsPOST = {
 };
 
 //////////////////////////////////////////////////
-// OPTIONS FOR HTTP GET2 
+// OPTIONS FOR HTTP GET 
 // Purpose:    Used to do a perform a query
 //////////////////////////////////////////////////
 
-var optionsGET2 = {
+var optionsGET = {
     url: 'https://terkaly.search.windows.net/indexes/hotels/docs?search=motel&facet=category&facet=rating,values:1|2|3|4|5&api-version=2014-07-31-Preview',
     method: 'GET',
     json: true,
@@ -138,67 +123,7 @@ var optionsGET2 = {
     body: {
     }
 };
-request(optionsPOST, callbackPOST);
-
-
-request(optionsGET2, callbackGET);
-
- 
-//////////////////////////////////////////////////////////////
-// Purpose:   A simple get to validate an index
-// Http Verb: GET
-// End Result: You can validate an index name
-//////////////////////////////////////////////////////////////
-function callbackGET(error, response, body) {
-    if (!error) {
-        
-        try {
-            var result = response.request.response.statusCode;
-            if (result === 200) {
-                console.log('***success in callBackGet***');
-                console.log("The statusCode = " + result);
-                // Chain to callback2
-                request(optionsPUT, callbackPUT);
-            }
-        } catch (error2) {
-            console.log('***Error encountered***');
-            console.log(error2);
-        }
-    } else {
-        console.log('error');
-        console.log(error);
-    }
-
-}
-
- 
-//////////////////////////////////////////////////////////////
-// Purpose:    Used to retrieve information
-// Http Verb:  GET
-// End Result: Query searches on the term ?motel? and retrieves facet categories for ratings.
-//////////////////////////////////////////////////////////////
-function callbackGET2(error, response, body) {
-    if (!error) {
-        try {
-            var result = response.request.response.statusCode;
-            if (result === 200) {
-                result = body.value[0];
-                console.log('description = ' + result.description);
-                console.log('hotel name = ' + result.hotelName);
-                console.log('hotel rate = ' + result.baseRate);
-            }
-            console.log('***success***');
-        } catch (error2) {
-            console.log('***Error encountered***');
-            console.log(error2);
-        }
-
-    } else {
-        console.log('error');
-        console.log(error);
-    }
-
-}
+request(optionsPUT, callbackPUT);
 
 //////////////////////////////////////////////////
 // Purpose:    Used to create an index
@@ -228,9 +153,8 @@ function callbackPUT(error, response, body) {
 
  
 //////////////////////////////////////////////////
-// Purpose:    Used to insert date and update
-// index
-// End Result: Inserts a document and udpates index
+// Purpose:    Used to insert data
+// End Result: Inserts a document
 //////////////////////////////////////////////////
 function callbackPOST(error, response, body) {
     if (!error) {
@@ -241,8 +165,35 @@ function callbackPOST(error, response, body) {
                 console.log('***success in callbackPOST***');
                 console.log("The statusCode = " + result);
                 // Perform a query
-                request(optionsGET2, callbackGET2);
+                request(optionsGET, callbackGET);
             }
+        } catch (error2) {
+            console.log('***Error encountered***');
+            console.log(error2);
+        }
+
+    } else {
+        console.log('error');
+        console.log(error);
+    }
+}
+//////////////////////////////////////////////////////////////
+// Purpose:    Used to retrieve information
+// Http Verb:  GET
+// End Result: Query searches on the term "motel" and retrieves 
+// facet categories for ratings.
+//////////////////////////////////////////////////////////////
+function callbackGET(error, response, body) {
+    if (!error) {
+        try {
+            var result = response.request.response.statusCode;
+            if (result === 200) {
+                result = body.value[0];
+                console.log('description = ' + result.description);
+                console.log('hotel name = ' + result.hotelName);
+                console.log('hotel rate = ' + result.baseRate);
+            }
+            console.log('***success***');
         } catch (error2) {
             console.log('***Error encountered***');
             console.log(error2);
